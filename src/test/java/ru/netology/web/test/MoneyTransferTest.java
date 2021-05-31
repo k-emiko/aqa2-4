@@ -35,10 +35,57 @@ class MoneyTransferTest {
     }
 
     @Test
-    void shouldTransferMoneyBetweenOwnCards() {
+    void transferFromCard2ToCard1() {
         DashboardPage.depositTo1();
-        TransferOwnPage.depositTo1(transfer, account2);
+        TransferOwnPage.depositToCard(transfer, account2);
         assertEquals(initialB1 + transfer, DashboardPage.getBalance(getBalance1()));
         assertEquals(initialB2 - transfer, DashboardPage.getBalance(getBalance2()));
+    }
+
+    @Test
+    void transferFromCard1ToCard2() {
+        DashboardPage.depositTo2();
+        TransferOwnPage.depositToCard(transfer, account1);
+        assertEquals(initialB2 + transfer, DashboardPage.getBalance(getBalance2()));
+        assertEquals(initialB1 - transfer, DashboardPage.getBalance(getBalance1()));
+    }
+
+    @Test
+    void transferFromInvalidCard() {
+        DashboardPage.depositTo1();
+        TransferOwnPage.depositToCard(transfer, "0000 0000 0000 0000");
+        TransferOwnPage.assertNotificationVisibility();
+    }
+
+    @Test
+    void transferOverdraft() {
+        transfer = 10000000;
+        DashboardPage.depositTo1();
+        TransferOwnPage.depositToCard(transfer, account2);
+        TransferOwnPage.assertNotificationVisibility();
+    }
+    @Test
+    void transferToSelf() {
+        transfer = 10000000;
+        DashboardPage.depositTo1();
+        TransferOwnPage.depositToCard(transfer, account1);
+        TransferOwnPage.assertNotificationVisibility();
+    }
+    @Test
+    void transferNegativeAmount() {
+        transfer = -500;
+        DashboardPage.depositTo2();
+        TransferOwnPage.depositToCard(transfer, account1);
+        assertEquals(initialB2 - transfer, DashboardPage.getBalance(getBalance2()));
+        assertEquals(initialB1 + transfer, DashboardPage.getBalance(getBalance1()));
+    }
+
+    @Test
+    void transferZero() {
+        transfer = 0;
+        DashboardPage.depositTo2();
+        TransferOwnPage.depositToCard(transfer, account1);
+        assertEquals(initialB2 + transfer, DashboardPage.getBalance(getBalance2()));
+        assertEquals(initialB1 - transfer, DashboardPage.getBalance(getBalance1()));
     }
 }
