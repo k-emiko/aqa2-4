@@ -22,7 +22,7 @@ public class TransferOwnPage {
         transfer.click();
     }
     public static void assertNotificationVisibility(){
-        notification.shouldBe(visible).shouldHave(text("Ошибкt"));
+        notification.shouldBe(visible).shouldHave(text("Ошибка"));
     }
 
 }

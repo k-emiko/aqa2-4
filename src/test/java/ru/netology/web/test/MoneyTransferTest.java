@@ -2,7 +2,6 @@ package ru.netology.web.test;
 
 import lombok.val;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import ru.netology.web.data.DataHelper;
 import ru.netology.web.page.DashboardPage;
@@ -39,7 +38,7 @@ class MoneyTransferTest {
     void transferFromCard2ToCard1() {
         DashboardPage.depositTo1();
         TransferOwnPage.depositToCard(transfer, account2);
-        assertEquals(initialB1 + 100, DashboardPage.getBalance(getBalance1()));
+        assertEquals(initialB1 + transfer, DashboardPage.getBalance(getBalance1()));
         assertEquals(initialB2 - transfer, DashboardPage.getBalance(getBalance2()));
     }
 
@@ -47,7 +46,7 @@ class MoneyTransferTest {
     void transferFromCard1ToCard2() {
         DashboardPage.depositTo2();
         TransferOwnPage.depositToCard(transfer, account1);
-        assertEquals(initialB2 + 100, DashboardPage.getBalance(getBalance2()));
+        assertEquals(initialB2 + transfer, DashboardPage.getBalance(getBalance2()));
         assertEquals(initialB1 - transfer, DashboardPage.getBalance(getBalance1()));
     }
 
@@ -58,14 +57,14 @@ class MoneyTransferTest {
         TransferOwnPage.assertNotificationVisibility();
     }
 
-    @Test @Disabled
+    @Test
     void transferOverdraft() {
         transfer = 10000000;
         DashboardPage.depositTo1();
         TransferOwnPage.depositToCard(transfer, account2);
         TransferOwnPage.assertNotificationVisibility();
     }
-    @Test @Disabled
+    @Test
     void transferToSelf() {
         transfer = 10000000;
         DashboardPage.depositTo1();
@@ -77,11 +76,11 @@ class MoneyTransferTest {
         transfer = -500;
         DashboardPage.depositTo2();
         TransferOwnPage.depositToCard(transfer, account1);
-        assertEquals(initialB2 - 100, DashboardPage.getBalance(getBalance2()));
+        assertEquals(initialB2 - transfer, DashboardPage.getBalance(getBalance2()));
         assertEquals(initialB1 + transfer, DashboardPage.getBalance(getBalance1()));
     }
 
-    @Test @Disabled
+    @Test
     void transferZero() {
         transfer = 0;
         DashboardPage.depositTo2();
