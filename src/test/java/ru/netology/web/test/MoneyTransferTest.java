@@ -39,7 +39,7 @@ class MoneyTransferTest {
     void transferFromCard2ToCard1() {
         DashboardPage.depositTo1();
         TransferOwnPage.depositToCard(transfer, account2);
-        assertEquals(initialB1 + transfer, DashboardPage.getBalance(getBalance1()));
+        assertEquals(initialB1 + 100, DashboardPage.getBalance(getBalance1()));
         assertEquals(initialB2 - transfer, DashboardPage.getBalance(getBalance2()));
     }
 
@@ -47,7 +47,7 @@ class MoneyTransferTest {
     void transferFromCard1ToCard2() {
         DashboardPage.depositTo2();
         TransferOwnPage.depositToCard(transfer, account1);
-        assertEquals(initialB2 + transfer, DashboardPage.getBalance(getBalance2()));
+        assertEquals(initialB2 + 100, DashboardPage.getBalance(getBalance2()));
         assertEquals(initialB1 - transfer, DashboardPage.getBalance(getBalance1()));
     }
 
@@ -77,7 +77,7 @@ class MoneyTransferTest {
         transfer = -500;
         DashboardPage.depositTo2();
         TransferOwnPage.depositToCard(transfer, account1);
-        assertEquals(initialB2 - transfer, DashboardPage.getBalance(getBalance2()));
+        assertEquals(initialB2 - 100, DashboardPage.getBalance(getBalance2()));
         assertEquals(initialB1 + transfer, DashboardPage.getBalance(getBalance1()));
     }
 
