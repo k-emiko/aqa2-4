@@ -16,12 +16,24 @@ public class TransferOwnPage {
         $("[data-test-id='amount'").shouldBe(visible);
     }
 
-    public static void depositToCard(int sum, String account){
+    public void depositToCard(int sum, String account){
         amount.setValue(String.valueOf(sum));
         from.setValue(account);
         transfer.click();
     }
-    public static void assertNotificationVisibility(){
+
+    public void depositFromEmpty(int sum){
+        amount.setValue(String.valueOf(sum));
+        transfer.click();
+    }
+
+    public void depositFromInvalid(int sum){
+        amount.setValue(String.valueOf(sum));
+        from.setValue("0000 0000 0000 0000");
+        transfer.click();
+    }
+
+    public void assertNotificationVisibility(){
         notification.shouldBe(visible).shouldHave(text("Ошибка"));
     }
 
