@@ -37,12 +37,14 @@ public class DashboardPage {
     public DashboardPage() {
         heading.shouldBe(visible);
     }
-    public TransferOwnPage depositTo1(){
-        transferButton1.click();
-        return new TransferOwnPage();
-    }
-    public TransferOwnPage depositTo2(){
-        transferButton2.click();
+
+    public TransferOwnPage depositTo(String cardNumber){
+        if (cardNumber == "1"){
+            transferButton1.click();
+        }
+        if (cardNumber == "2"){
+            transferButton2.click();
+        }
         return new TransferOwnPage();
     }
 }
