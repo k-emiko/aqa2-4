@@ -15,7 +15,7 @@ import static com.google.common.primitives.Ints.toArray;
 @Value
 public class DashboardPage {
     SelenideElement heading = $("[data-test-id=dashboard]");
-    private static Collection<SelenideElement> accounts = $$(".list__item");
+    private Collection<SelenideElement> accounts = $$(".list__item");
 
     public int[] allBalances() {
         Collection<Integer> balances = new ArrayList<>();
