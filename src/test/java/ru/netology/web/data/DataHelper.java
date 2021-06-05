@@ -28,7 +28,11 @@ public class DataHelper {
         return new VerificationCode("12345");
     }
 
-    public static String getValidAccount1() { return "5559 0000 0000 0001";}
-
-    public static String getValidAccount2() { return "5559 0000 0000 0002";}
+    public static String[] getValidAccounts() {
+        return new String[]{"5559 0000 0000 0001", "5559 0000 0000 0002"};
+    }
+    public static String getInvalidAccount()
+    {
+        return "0000 0000 0000 0000";
+    }
 }

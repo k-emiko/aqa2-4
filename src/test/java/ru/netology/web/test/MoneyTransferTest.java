@@ -14,52 +14,48 @@ import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MoneyTransferTest {
-    String account1 = DataHelper.getValidAccount1();
-    String account2 = DataHelper.getValidAccount2();
-    int initialB1;
-    int initialB2;
+    String[] accounts = DataHelper.getValidAccounts();
     int transfer;
     DashboardPage dashboardPage;
     TransferOwnPage transferOwnPage;
+    int[] initialBalances;
 
     @BeforeAll
-    static void headless(){
+    static void headless() {
         Configuration.headless = true;
     }
 
     @BeforeEach
-    void setUp(){
+    void setUp() {
         open("http://localhost:9999");
         val loginPage = new LoginPage();
-//    val loginPage = open("http://localhost:9999", LoginPage.class);
         val authInfo = DataHelper.getAuthInfo();
         val verificationPage = loginPage.validLogin(authInfo);
         val verificationCode = DataHelper.getVerificationCodeFor(authInfo);
         dashboardPage = verificationPage.validVerify(verificationCode);
-        initialB1 = dashboardPage.getBalance(dashboardPage.getBalance1());
-        initialB2 = dashboardPage.getBalance(dashboardPage.getBalance2());
+        initialBalances = dashboardPage.allBalances();
         transfer = 500;
     }
 
     @Test
     void transferFromCard2ToCard1() {
-        transferOwnPage = dashboardPage.depositTo("1");
-        transferOwnPage.depositToCard(transfer, account2);
-        assertEquals(initialB1 + transfer, dashboardPage.getBalance(dashboardPage.getBalance1()));
-        assertEquals(initialB2 - transfer, dashboardPage.getBalance(dashboardPage.getBalance2()));
+        transferOwnPage = dashboardPage.depositTo(1);
+        transferOwnPage.depositToCard(transfer, accounts[1]);
+        assertEquals(initialBalances[0] + transfer, dashboardPage.allBalances()[0]);
+        assertEquals(initialBalances[1] - transfer, dashboardPage.allBalances()[1]);
     }
 
     @Test
     void transferFromCard1ToCard2() {
-        transferOwnPage = dashboardPage.depositTo("2");
-        transferOwnPage.depositToCard(transfer, account1);
-        assertEquals(initialB2 + transfer, dashboardPage.getBalance(dashboardPage.getBalance2()));
-        assertEquals(initialB1 - transfer, dashboardPage.getBalance(dashboardPage.getBalance1()));
+        transferOwnPage = dashboardPage.depositTo(2);
+        transferOwnPage.depositToCard(transfer, accounts[0]);
+        assertEquals(initialBalances[1] + transfer, dashboardPage.allBalances()[1]);
+        assertEquals(initialBalances[0] - transfer, dashboardPage.allBalances()[0]);
     }
 
     @Test
     void transferFromInvalidCard() {
-        transferOwnPage = dashboardPage.depositTo("1");
+        transferOwnPage = dashboardPage.depositTo(1);
         transferOwnPage.depositFromInvalid(transfer);
         transferOwnPage.assertNotificationVisibility();
     }
@@ -67,39 +63,40 @@ class MoneyTransferTest {
     @Test
     void transferOverdraft() {
         transfer = 10000000;
-        transferOwnPage = dashboardPage.depositTo("1");
-        transferOwnPage.depositToCard(transfer, account2);
+        transferOwnPage = dashboardPage.depositTo(1);
+        transferOwnPage.depositToCard(transfer, accounts[1]);
         transferOwnPage.assertNotificationVisibility();
     }
+
     @Test
     void transferToSelf() {
         transfer = 10000000;
-        transferOwnPage = dashboardPage.depositTo("1");
-        transferOwnPage.depositToCard(transfer, account1);
+        transferOwnPage = dashboardPage.depositTo(1);
+        transferOwnPage.depositToCard(transfer, accounts[0]);
         transferOwnPage.assertNotificationVisibility();
     }
 
     @Test
     void transferNegativeAmount() {
         transfer = -500;
-        transferOwnPage = dashboardPage.depositTo("2");
-        transferOwnPage.depositToCard(transfer, account1);
-        assertEquals(initialB2 - transfer, dashboardPage.getBalance(dashboardPage.getBalance2()));
-        assertEquals(initialB1 + transfer, dashboardPage.getBalance(dashboardPage.getBalance1()));
+        transferOwnPage = dashboardPage.depositTo(2);
+        transferOwnPage.depositToCard(transfer, accounts[0]);
+        assertEquals(initialBalances[1] - transfer, dashboardPage.allBalances()[1]);
+        assertEquals(initialBalances[0] + transfer, dashboardPage.allBalances()[0]);
     }
 
     @Test
     void transferZero() {
         transfer = 0;
-        transferOwnPage = dashboardPage.depositTo("2");
-        transferOwnPage.depositToCard(transfer, account1);
+        transferOwnPage = dashboardPage.depositTo(2);
+        transferOwnPage.depositToCard(transfer, accounts[0]);
         transferOwnPage.assertNotificationVisibility();
     }
 
     @Test
-    void transferFromEmptyCard(){
+    void transferFromEmptyCard() {
         transfer = 1000;
-        transferOwnPage = dashboardPage.depositTo("2");
+        transferOwnPage = dashboardPage.depositTo(2);
         transferOwnPage.depositFromEmpty(transfer);
         transferOwnPage.assertNotificationVisibility();
     }
